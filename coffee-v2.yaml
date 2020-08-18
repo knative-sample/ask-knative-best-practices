@@ -1,0 +1,25 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: coffee
+spec:
+  template:
+    metadata:
+      name: coffee-v2
+      annotations:
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: registry.cn-hangzhou.aliyuncs.com/knative-sample/helloworld-go:160e4dc8
+          env:
+            - name: TARGET
+              value: "coffee-v2"
+
+  traffic:
+  - tag: v2
+    revisionName: coffee-v2
+    percent: 30
+
+  - tag: v1
+    revisionName: coffee-v1
+    percent: 70
